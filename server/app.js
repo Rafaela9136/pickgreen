@@ -5,8 +5,8 @@ var bodyParser      = require('body-parser');
 var mongoose        = require('mongoose');
 var hash            = require('bcrypt-nodejs');
 var path            = require('path');
-var passport        = require('passport');
-var localStrategy   = require('passport-local').Strategy;
+/*var passport        = require('passport');
+var localStrategy   = require('passport-local').Strategy;*/
 
 // mongoose
 mongoose.connect('mongodb://localhost/pickgreen-mongo');
@@ -24,24 +24,26 @@ var User = require('./models/user.js');
 var app = express();
 
 // require routes
+var userRoutes = require('./routes/user.js');
 //var routes = require('./routes/api.js');
 
 // define middleware
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(passport.initialize());
-app.use(passport.session());
+/*app.use(passport.initialize());
+app.use(passport.session());*/
 
 // configure passport
-passport.use(new localStrategy(User.authenticate()));
+/*passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser(User.deserializeUser());*/
 
 app.get('/', function(req, res) {
   res.send("Ta pegando");
 });
 // routes
+app.use('/user', userRoutes);
 //app.use('/', routes);
 
 // error hndlers
