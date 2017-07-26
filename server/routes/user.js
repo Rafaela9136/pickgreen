@@ -1,6 +1,8 @@
 var express = require('express');
 var router 	= express.Router();
+var bcrypt	= require('bcrypt');
 var User 	= require('../models/user.js');
+var apiKey 	= require('../config/apiKey.js');
 
 router.post('/register', function(req, res) {
 	var user 			= new User();
@@ -11,29 +13,45 @@ router.post('/register', function(req, res) {
 	user.pontos 		= req.body.pontos;
 	user.telefone 		= req.body.telefone;
 	user.endereco 		= req.body.endereco;
-	user.password 		= req.body.password;
-	user.save(function(err) {
+	bcrypt.hash(req.body.password, 10, function(err, hash) {
 		if (err) {
-			if (err.name === 'MongoError' && err.code === 11000) {
-        		// Duplicate username
-        		return res.status(400).send({ success: false, message: 'Usuário já existente.' });
-      		}
-      		// Some other error
-      		return res.status(500).send({ success: false, message: 'User validation error' });
+			res.status(400).send(err);
 		} else {
-			res.status(200).json({ success: true, message: 'Usuário cadastrado com sucesso.'});
+			user.password = hash;
+			user.save(function(err) {
+				if (err) {
+					if (err.name === 'MongoError' && err.code === 11000) {
+		        		// Duplicate username
+		        		return res.status(400).send({ success: false, message: 'Usuário já existente.' });
+		      		}
+		      		// Some other error
+		      		return res.status(400).send({ success: false, message: 'User validation error' });
+				} else {
+					res.status(200).json({ success: true, message: 'Usuário cadastrado com sucesso.'});
+				}
+			});
 		}
 	});
 });
 
-router.post('/login', function(req, res) {
+router.post('/auth', function(req, res) {
 	User.findOne({'email': req.body.email}, function(error, user) {
-		if (!user) res.status(404).send('Usuário não encontrado.');
-		if (user.password == req.body.password) {
-			res.status(200).json(user);
+		if (!user) {
+			res.status(400).send({success: false, message: 'Usuário não encontrado.'});
 		} else {
-			res.status(400).send('Senha incorreta.');
-		};
+			bcrypt.compare(req.body.password, user.password, function(err, result) {
+				if (err) {
+					res.status(400).send(err);
+				} else {
+					if (result) {
+						res.status(200).json({success: true, user: user, result: result});
+					} else {
+						res.status(400).json({success: false, message: 'Senha incorreta.'});
+					}
+				}
+			});
+		}
+		
 	});
 });
 
