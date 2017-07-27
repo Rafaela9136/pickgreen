@@ -24,7 +24,13 @@ var User = require('./models/user.js');
 var app = express();
 
 // require routes
-var userRoutes = require('./routes/user.js');
+var userRoutes 		= require('./routes/user.js');
+var localRoutes		= require('./routes/local.js');
+var materialRoutes	= require('./routes/material.js');
+var coletorRoutes	= require('./routes/coletor.js');
+var admRoutes		= require('./routes/administrador.js');
+var eventoRoutes	= require('./routes/evento.js');
+var depositoRoutes	= require('./routes/deposito.js');
 //var routes = require('./routes/api.js');
 
 // define middleware
@@ -40,10 +46,16 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());*/
 
 app.get('/', function(req, res) {
-  res.send("Ta pegando");
+  res.send('Express server listening on port 3000');
 });
 // routes
-app.use('/user', userRoutes);
+app.use('/userApi', userRoutes);
+app.use('/localApi', localRoutes);
+app.use('/materialApi', materialRoutes);
+app.use('/coletorApi', coletorRoutes);
+app.use('/admApi', admRoutes);
+app.use('/eventoApi', eventoRoutes);
+app.use('/depositoApi', depositoRoutes);
 //app.use('/', routes);
 
 // error hndlers
