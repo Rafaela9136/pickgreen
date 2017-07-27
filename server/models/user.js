@@ -1,7 +1,6 @@
 // user model
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
   name: {
@@ -9,13 +8,14 @@ var User = new Schema({
   },
   email: {
   	type: String,
-  	lowercase: true
+  	lowercase: true,
+    unique: true
   },
   dataNascimento: {
   	type: Date
   },
   sexo: {
-  	type: Boolean
+  	type: String
   },
   pontos: {
   	type: Number
@@ -39,9 +39,6 @@ var User = new Schema({
     type: Date,
     default: Date.now
   }
-});
-
-User.plugin(passportLocalMongoose);
-
+}, { runSettersOnQuery: true } );
 
 module.exports = mongoose.model('users', User);

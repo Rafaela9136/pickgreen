@@ -5,8 +5,8 @@ var bodyParser      = require('body-parser');
 var mongoose        = require('mongoose');
 var hash            = require('bcrypt-nodejs');
 var path            = require('path');
-var passport        = require('passport');
-var localStrategy   = require('passport-local').Strategy;
+/*var passport        = require('passport');
+var localStrategy   = require('passport-local').Strategy;*/
 
 // mongoose
 mongoose.connect('mongodb://localhost/pickgreen-mongo');
@@ -24,24 +24,38 @@ var User = require('./models/user.js');
 var app = express();
 
 // require routes
+var userRoutes 		= require('./routes/user.js');
+var localRoutes		= require('./routes/local.js');
+var materialRoutes	= require('./routes/material.js');
+var coletorRoutes	= require('./routes/coletor.js');
+var admRoutes		= require('./routes/administrador.js');
+var eventoRoutes	= require('./routes/evento.js');
+var depositoRoutes	= require('./routes/deposito.js');
 //var routes = require('./routes/api.js');
 
 // define middleware
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(passport.initialize());
-app.use(passport.session());
+/*app.use(passport.initialize());
+app.use(passport.session());*/
 
 // configure passport
-passport.use(new localStrategy(User.authenticate()));
+/*passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser(User.deserializeUser());*/
 
 app.get('/', function(req, res) {
-  res.send("Ta pegando");
+  res.send('Express server listening on port 3000');
 });
 // routes
+app.use('/userApi', userRoutes);
+app.use('/localApi', localRoutes);
+app.use('/materialApi', materialRoutes);
+app.use('/coletorApi', coletorRoutes);
+app.use('/admApi', admRoutes);
+app.use('/eventoApi', eventoRoutes);
+app.use('/depositoApi', depositoRoutes);
 //app.use('/', routes);
 
 // error hndlers
