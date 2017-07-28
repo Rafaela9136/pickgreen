@@ -31,7 +31,7 @@ router.post('/', function(req, res) {
 	deposito._local 	= req.body._local;
 	deposito._user 		= req.body._user;
 	deposito._material 	= req.body._material;
-	deposito.peso		= req.body.peso;
+	if (req.body.peso) deposito.peso			= req.body.peso;
 	if (req.body._coletor) deposito._coletor 	= req.body._coletor;
 	if (req.body.confirmed) deposito.confirmed	= req.body.confirmed;
 	if (req.body.status) deposito.status 		= req.body.status;
@@ -84,6 +84,22 @@ router.get('/user/:user_id', function(req, res) {
 		}
 	});
 });
+
+router.post('/confirmar/:deposito_id/', function(req, res) {
+	Deposito.findById(req.params.deposito_id, function(err, deposito) {
+		deposito._coletor = req.body.coletor_id;
+		deposito.peso = req.body.peso;
+		deposito.confirmed = Date.now();
+		deposito.status = 'validado';
+		deposito.save(function(err) {
+			if (err) {
+				res.status(400).send({success: false, message: err});
+			} else {
+				res.status(200).json({success: true, message: "Depósito confirmado."});
+			}
+		})
+	})
+})
 
 
 module.exports = router;

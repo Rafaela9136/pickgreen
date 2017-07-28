@@ -18,7 +18,7 @@ var Deposito = new Schema({
     type: Number,
   },
   status: {
-    type: ['validado, inválido, pendente'],
+    type: ['validado', 'inválido', 'pendente'],
     default: 'pendente'
   }
 });
