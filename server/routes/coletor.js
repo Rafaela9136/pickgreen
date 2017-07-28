@@ -38,7 +38,7 @@ router.post('/', function(req, res) {
 		if (err) {
 			res.status(400).send({success: false, message: err});
 		} else {
-			res.status(200).send({success: true, message: "Coletor registrado."});
+			res.status(200).send({success: true, message: coletor._id});
 		}
 	});
 });
@@ -67,6 +67,20 @@ router.delete('/:coletor_id', function(req, res) {
 			res.status(400).send({success: false, message: err});
 		} else {
 			res.status(200).send({success: true, message: "Coletor removido."});
+		}
+	});
+});
+
+router.post('/auth', function(req, res) {
+	Coletor.findOne({"pin": req.body.pin}, function(err, coletor) {
+		if (err) {
+			res.status(400).send({success: false, message: err});
+		} else {
+			if (coletor) {
+				res.status(200).json({success: true, message: coletor});
+			} else {
+				res.status(400).send({success: false, message: "Erro de autenticação."});
+			}
 		}
 	});
 });

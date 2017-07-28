@@ -64,5 +64,19 @@ router.delete('/:administrador_id', function(req, res) {
 	});
 });
 
+router.post('/auth', function(req, res) {
+	Administrador.findOne({"pin": req.body.pin}, function(err, administrador) {
+		if (err) {
+			res.status(400).send({success: false, message: err});
+		} else {
+			if (administrador) {
+				res.status(200).json({success: true, message: administrador});
+			} else {
+				res.status(400).send({success: false, message: "Erro de autenticação."});
+			}
+		}
+	});
+});
+
 
 module.exports = router;

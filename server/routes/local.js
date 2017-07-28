@@ -36,7 +36,7 @@ router.post('/', function(req, res) {
 		if (err) {
 			res.status(400).send({success: false, message: 'Local não registrado.'});
 		} else {
-			res.status(200).send({success: true, message: 'Local registrado.'});
+			res.status(200).send({success: true, message: local._id});
 		}
 	});
 });
@@ -69,25 +69,28 @@ router.delete('/:local_id', function(req, res) {
 	});
 });
 
-router.get('/query', function(req, res) {
+router.get('/query/fields', function(req, res) {
 	if (req.query.cidade != null) {
-		var result = findByCity(req.query.cidade);
-		if (result.success == true) {
-			res.status(200).json(result.locais);
-		}
+		findLocalByCity(req.query.cidade, function(result) {
+			if (result.success == true) {
+				res.status(200).json(result);
+			} else {
+				res.status(400).send(result);
+			}
+		});
 	} else {
-		res.status(400).send('Query not found.');
+		res.status(400).send({success: false, message: 'Query not found.'});
 	}
 });
 
 /* Query methods */
 
-var findByCity = function(cidade) {
-	Local.find({'endereco': {'cidade': cidade}}, function(err, locais) {
+var findLocalByCity = function(cidade, callback) {
+	Local.find({'endereco.cidade': cidade}, function(err, locais) {
 		if (err) {
-			return {success: false, message: err};
+			callback({success: false, message: err});
 		} else {
-			return {success: true, result: locais};
+			callback({success: true, message: locais});
 		}
 	});
 };

@@ -1,6 +1,7 @@
 var express 	= require('express');
 var router 		= express.Router();
 var Evento 		= require('../models/evento.js');
+var Local 		= require('../models/local.js');
 var apiKey 		= require('../config/apiKey.js');
 
 // Index
@@ -36,7 +37,7 @@ router.post('/', function(req, res) {
 		if (err) {
 			res.status(400).send({success: false, message: err});
 		} else {
-			res.status(200).send({success: true, message: "Evento registrado."});
+			res.status(200).send({success: true, message: evento._id});
 		}
 	});
 });
@@ -69,5 +70,27 @@ router.delete('/:evento_id', function(req, res) {
 	});
 });
 
+/*router.get('/query/fields', function(req, res) {
+	Evento.find({}, function(err, eventos) {
+		if (req.query.cidade) {
+			findLocalByCity(req.query.cidade, function(locais) {
+				eventosFiltrados = [];
+				locais.forEach(function(local){
+
+				})
+			})
+		}
+	});
+});*/
+
+var findLocalByCity = function(cidade, callback) {
+	Local.find({'endereco.cidade': cidade}, function(err, locais) {
+		if (err) {
+			callback({success: false, message: err});
+		} else {
+			callback({success: true, message: locais});
+		}
+	});
+};
 
 module.exports = router;

@@ -33,7 +33,7 @@ router.post('/', function(req, res) {
 		if (err) {
 			res.status(400).send({success: false, message: err});
 		} else {
-			res.status(200).send({success: true, message: "Material registrado."});
+			res.status(200).send({success: true, message: material._id});
 		}
 	});
 });

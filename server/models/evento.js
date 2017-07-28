@@ -12,7 +12,7 @@ var Evento = new Schema({
     default: Date.now
   },
   ended: {
-  	type: Date,
+  	type: Date
   }
 });
 

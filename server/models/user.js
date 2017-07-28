@@ -18,7 +18,8 @@ var User = new Schema({
   	type: String
   },
   pontos: {
-  	type: Number
+  	type: Number,
+    default: 0
   },
   telefone: {
   	type: String

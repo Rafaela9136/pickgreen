@@ -28,18 +28,18 @@ router.get('/:deposito_id', function(req, res) {
 // Create
 router.post('/', function(req, res) {
 	var deposito = new Deposito();
-	deposito._coletor 	= req.body._coletor;
 	deposito._local 	= req.body._local;
 	deposito._user 		= req.body._user;
 	deposito._material 	= req.body._material;
 	deposito.peso		= req.body.peso;
+	if (req.body._coletor) deposito._coletor 	= req.body._coletor;
 	if (req.body.confirmed) deposito.confirmed	= req.body.confirmed;
 	if (req.body.status) deposito.status 		= req.body.status;
 	deposito.save(function(err) {
 		if (err) {
 			res.status(400).send({success: false, message: err});
 		} else {
-			res.status(200).send({success: true, message: "Deposito registrado."});
+			res.status(200).send({success: true, message: deposito._id});
 		}
 	});
 });
@@ -71,6 +71,16 @@ router.delete('/:deposito_id', function(req, res) {
 			res.status(400).send({success: false, message: err});
 		} else {
 			res.status(200).send({success: true, message: "Deposito removido."});
+		}
+	});
+});
+
+router.get('/user/:user_id', function(req, res) {
+	Deposito.find({"_user": req.params.user_id}, function(err, depositos) {
+		if (err) {
+			res.status(400).send({success: false, message: err});
+		} else {
+			res.status(200).send({success: true, message: depositos})
 		}
 	});
 });
